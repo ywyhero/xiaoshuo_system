@@ -2,7 +2,6 @@
     "apps": [
       {
         "name": "xiaoshuo_system",
-        "cwd": "/xiaoshuo/node",
         "script": "bin/www",
         "log_date_format": "YYYY-MM-DD HH:mm Z",
         "error_file": "/var/log/node-app/node-app.stderr.log",
