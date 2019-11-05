@@ -78,7 +78,7 @@ const upload = async (ctx, next) => {
         ctx.body = {
             code: 200,
             data: {
-                imgUrl: `${config.address}:8000/upload/${fileName}`
+                imgUrl: `${config.address}:3000/upload/${fileName}`
             }
         }
         await next();
@@ -100,7 +100,7 @@ const createBook = async (ctx, next) => {
                 name,
                 type,
                 typeName,
-                imgUrl: fileName ? `${config.address}:8000/upload/${fileName}` : `${config.address}:8000/upload/default.jpg`
+                imgUrl: fileName ? `${config.address}:3000/upload/${fileName}` : `${config.address}:3000/upload/default.jpg`
             }
             await Schemas.books.updateOne({bookId: bookId}, booksInfo);
             ctx.body = {
@@ -120,7 +120,7 @@ const createBook = async (ctx, next) => {
                 type,
                 typeName,
                 chapters,
-                imgUrl: fileName ? `${config.address}:8000/upload/${fileName}` : `${config.address}:8000/upload/default.jpg`
+                imgUrl: fileName ? `${config.address}:3000/upload/${fileName}` : `${config.address}:3000/upload/default.jpg`
             }
             await Schemas.books.create(booksInfo)
             ctx.body = {
