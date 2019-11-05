@@ -1,5 +1,5 @@
 module.exports = {
   secret: 'vine_xiaoshuo',
-  port: 8000,
+  port: 3000,
   address: '127.0.0.1'
 }
