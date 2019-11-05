@@ -2,7 +2,6 @@ const Schemas = require('../controller/Schema');
 const fs = require('fs');
 const path = require('path');
 const config = require('./../config/index.js');
-let fileName = '';
 // 书本id
 async function getId () {
     let bookId = 0;
@@ -70,7 +69,7 @@ const upload = async (ctx, next) => {
             }
             return
         }
-        fileName = `${file.name.split('.')[0]}${Math.floor(new Date().getTime() / 1000)}.${file.name.split('.')[1]}`
+        const fileName = `${file.name.split('.')[0]}${Math.floor(new Date().getTime() / 1000)}.${file.name.split('.')[1]}`
         let filePath = path.join('public', 'upload/', fileName);
         // 创建写入流
         const upStream = fs.createWriteStream(filePath);
@@ -94,13 +93,14 @@ const createBook = async (ctx, next) => {
         const type = ctx.request.body.type;
         const typeName = ctx.request.body.typeName;
         const author = ctx.request.body.author;
+        const imgUrl = ctx.request.body.imgUrl;
         if(bookId) {
             const booksInfo = {
                 author,
                 name,
                 type,
                 typeName,
-                imgUrl: fileName ? `${config.address}:3000/upload/${fileName}` : `${config.address}:3000/upload/default.jpg`
+                imgUrl: imgUrl ? imgUrl : `${config.address}:3000/upload/default.jpg`
             }
             await Schemas.books.updateOne({bookId: bookId}, booksInfo);
             ctx.body = {
