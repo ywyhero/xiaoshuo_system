@@ -120,7 +120,7 @@ const createBook = async (ctx, next) => {
                 type,
                 typeName,
                 chapters,
-                imgUrl: fileName ? `${config.address}:3000/upload/${fileName}` : `${config.address}:3000/upload/default.jpg`
+                imgUrl: imgUrl ? imgUrl : `${config.address}:3000/upload/default.jpg`
             }
             await Schemas.books.create(booksInfo)
             ctx.body = {
