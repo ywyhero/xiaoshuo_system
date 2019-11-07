@@ -38,7 +38,7 @@ const uploadTxt = async (ctx, next) => {
         // 创建可读流
         const render = await fs.createReadStream(file.path);
         const fileName = `${file.name.split('.')[0]}${Math.floor(new Date().getTime() / 1000)}.${file.name.split('.')[1]}`
-        let filePath = path.join('public', 'upload/', fileName);
+        let filePath = path.join('public', 'upload/files/', fileName);
         const upStream = await fs.createWriteStream(filePath);
         await render.pipe(upStream);
         const result = await readFileEvent(upStream.path);
@@ -70,14 +70,14 @@ const upload = async (ctx, next) => {
             return
         }
         const fileName = `${file.name.split('.')[0]}${Math.floor(new Date().getTime() / 1000)}.${file.name.split('.')[1]}`
-        let filePath = path.join('public', 'upload/', fileName);
+        let filePath = path.join('public', 'upload/images', fileName);
         // 创建写入流
         const upStream = fs.createWriteStream(filePath);
         render.pipe(upStream);
         ctx.body = {
             code: 200,
             data: {
-                imgUrl: `${config.address}:3000/upload/${fileName}`
+                imgUrl: `${config.address}:3000/upload/images/${fileName}`
             }
         }
         await next();
@@ -94,13 +94,17 @@ const createBook = async (ctx, next) => {
         const typeName = ctx.request.body.typeName;
         const author = ctx.request.body.author;
         const imgUrl = ctx.request.body.imgUrl;
+        const like = ctx.request.body.like;
+        const isOver = ctx.request.body.isOver;
         if(bookId) {
             const booksInfo = {
                 author,
                 name,
                 type,
                 typeName,
-                imgUrl: imgUrl ? imgUrl : `${config.address}:3000/upload/default.jpg`
+                imgUrl: imgUrl ? imgUrl : `${config.address}:3000/upload/images/default.jpg`,
+                like,
+                isOver
             }
             await Schemas.books.updateOne({bookId: bookId}, booksInfo);
             ctx.body = {
@@ -120,7 +124,10 @@ const createBook = async (ctx, next) => {
                 type,
                 typeName,
                 chapters,
-                imgUrl: imgUrl ? imgUrl : `${config.address}:3000/upload/default.jpg`
+                imgUrl: imgUrl ? imgUrl : `${config.address}:3000/upload/images/default.jpg`,
+                like,
+                isOver,
+                readCount: 0,
             }
             await Schemas.books.create(booksInfo)
             ctx.body = {
@@ -154,12 +161,20 @@ const searchBooks = async (ctx, next) => {
         const pageSize = ctx.request.body.pageSize;
         const bookId = ctx.request.body.bookId || null;
         const type = ctx.request.body.type || null;
+        const isOver = ctx.request.body.isOver || null;
+        const like = ctx.request.body.like || null;
         let findObj = {};
         if(bookId) {
             findObj = Object.assign(findObj, {bookId: bookId})
         }
         if(type) {
             findObj = Object.assign(findObj, {type: type})
+        }
+        if(isOver) {
+            findObj = Object.assign(findObj, {isOver: isOver})
+        }
+        if(like) {
+            findObj = Object.assign(findObj, {like: like})
         }
         const books = await Schemas.books.find(findObj).limit(pageSize).skip((pageNo - 1) * pageSize);
         const total = await Schemas.books.find(findObj).countDocuments();
@@ -172,6 +187,9 @@ const searchBooks = async (ctx, next) => {
                 type: book.type,
                 typeName: book.typeName,
                 imgUrl: book.imgUrl,
+                like: book.like,
+                isOver: book.isOver,
+                readCount: book.readCount,
                 createTime: new Date(book.createTime).getTime()
             }
             lists.push(obj);

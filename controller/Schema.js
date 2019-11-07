@@ -14,6 +14,9 @@ const booksSchema = new mongoose.Schema({
     typeName: String,
     imgUrl: String,
     chapters: [],
+    isOver: Number,
+    like: Number,
+    readCount: Number,
     createTime: Date
 })
 //查找小说类型
