@@ -13,7 +13,7 @@ const jwtMethod = require('./utils/index.js');
 onerror(app)
 app.use(cors({
     origin: function () {
-        return `${config.address}:8080`
+        return `${config.address}`
     },
     maxAge: 5, //指定本次预检请求的有效期，单位为秒。
     credentials: true, //是否允许发送Cookie
