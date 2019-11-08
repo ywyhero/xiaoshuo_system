@@ -11,7 +11,7 @@ const jwtKoa  = require('koa-jwt');      // 用于路由权限控制
 const port = process.env.PORT || config.port;
 const jwtMethod = require('./utils/index.js');
 onerror(app)
-const origin = config.address === 'http://47.105.109.192' ? `${config.address}` : `${config.address}:${config.prodport}`;
+const origin = config.address === 'http://www.vinekan.com' ? `${config.address}` : `${config.address}:${config.prodport}`;
 app.use(cors({
     origin: origin,
     maxAge: 5, //指定本次预检请求的有效期，单位为秒。

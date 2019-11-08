@@ -9,9 +9,11 @@ router.prefix('/api');
 /**
  * 小说前端接口
  */
-
+//获取书本接口
 router.post('/story/getBooks', storyBooks.getBooks);
+//获取章节接口
 router.post('/story/getChapters', storyBooks.getChapters);
+//获取内容接口
 router.post('/story/getContent', storyBooks.getContent);
 
 /**
