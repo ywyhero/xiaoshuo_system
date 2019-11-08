@@ -11,8 +11,9 @@ const jwtKoa  = require('koa-jwt');      // 用于路由权限控制
 const port = process.env.PORT || config.port;
 const jwtMethod = require('./utils/index.js');
 onerror(app)
+const origin = config.address === 'http://47.105.109.192' ? `${config.address}` : `${config.address}:${config.prodport}`;
 app.use(cors({
-    origin: `${config.address}:${config.prodport}`,
+    origin: origin,
     maxAge: 5, //指定本次预检请求的有效期，单位为秒。
     credentials: true, //是否允许发送Cookie
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], //设置所允许的HTTP请求方法
