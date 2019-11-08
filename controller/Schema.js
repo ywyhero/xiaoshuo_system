@@ -13,6 +13,7 @@ const booksSchema = new mongoose.Schema({
     type: Number,
     typeName: String,
     imgUrl: String,
+    description: String,
     chapters: [],
     isOver: Number,
     like: Number,

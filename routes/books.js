@@ -96,6 +96,7 @@ const createBook = async (ctx, next) => {
         const imgUrl = ctx.request.body.imgUrl;
         const like = ctx.request.body.like;
         const isOver = ctx.request.body.isOver;
+        const description = ctx.request.body.description;
         if(bookId) {
             const booksInfo = {
                 author,
@@ -104,7 +105,8 @@ const createBook = async (ctx, next) => {
                 typeName,
                 imgUrl: imgUrl ? imgUrl : `${config.address}:3000/upload/images/default.jpg`,
                 like,
-                isOver
+                isOver,
+                description
             }
             await Schemas.books.updateOne({bookId: bookId}, booksInfo);
             ctx.body = {
@@ -128,6 +130,7 @@ const createBook = async (ctx, next) => {
                 like,
                 isOver,
                 readCount: 0,
+                description
             }
             await Schemas.books.create(booksInfo)
             ctx.body = {
@@ -190,6 +193,7 @@ const searchBooks = async (ctx, next) => {
                 like: book.like,
                 isOver: book.isOver,
                 readCount: book.readCount,
+                description: book.description,
                 createTime: new Date(book.createTime).getTime()
             }
             lists.push(obj);
@@ -207,6 +211,11 @@ const searchBooks = async (ctx, next) => {
 const deleteBook = async (ctx, next) => {
     try {
         const bookId = ctx.request.body.bookId;
+        const book = await Schemas.books.findOne({ bookId: bookId });
+        const image = book.imgUrl.split('/images/')[1];
+        if(image !== 'default.jpg') {
+            fs.unlinkSync(`public/upload/images/${image}`) //删除对应的小说封面图
+        }
         await Schemas.books.deleteOne({ bookId: bookId });
         ctx.body = {
             code: 200,

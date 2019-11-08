@@ -3,8 +3,20 @@ const router = new Router();
 const Common = require('./common.js');
 const Books = require('./books.js');
 const Chapters = require('./chapters.js');
+const storyBooks = require('./story/books');
 
 router.prefix('/api');
+/**
+ * 小说前端接口
+ */
+
+router.post('/story/getBooks', storyBooks.getBooks);
+router.post('/story/getChapters', storyBooks.getChapters);
+router.post('/story/getContent', storyBooks.getContent);
+
+/**
+ * 小说后台管理系统的接口
+ */
 // 登陆接口
 router.post(`/login`, Common.login);
 // 退出接口
