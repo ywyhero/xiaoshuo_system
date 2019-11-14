@@ -148,7 +148,10 @@ const createBook = async (ctx, next) => {
 // 获取书本类型
 const getTypes = async (ctx, next) => {
     try {
-        const types = await Schemas.types.find({});
+        const like = ctx.request.body.like;
+        const types = await Schemas.types.find({
+            like: like
+        });
         ctx.body = {
             code: 200,
             types: types

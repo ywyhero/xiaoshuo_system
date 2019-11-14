@@ -4,6 +4,7 @@ const Common = require('./common.js');
 const Books = require('./books.js');
 const Chapters = require('./chapters.js');
 const storyBooks = require('./story/books');
+const storyMore = require('./story/more');
 
 router.prefix('/api');
 /**
@@ -15,6 +16,10 @@ router.post('/story/getBooks', storyBooks.getBooks);
 router.post('/story/getChapters', storyBooks.getChapters);
 //获取内容接口
 router.post('/story/getContent', storyBooks.getContent);
+// 搜索书本
+router.post(`/story/searchBooks`, storyBooks.searchBooks);
+// 获取所有书本类型
+router.post(`/story/getTypes`, storyMore.getTypes);
 
 /**
  * 小说后台管理系统的接口
