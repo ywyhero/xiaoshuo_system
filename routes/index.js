@@ -3,8 +3,10 @@ const router = new Router();
 const Common = require('./common.js');
 const Books = require('./books.js');
 const Chapters = require('./chapters.js');
+const Logs = require('./logs.js');
 const storyBooks = require('./story/books');
 const storyMore = require('./story/more');
+const storyCommon = require('./story/common');
 
 router.prefix('/api');
 /**
@@ -16,10 +18,16 @@ router.post('/story/getBooks', storyBooks.getBooks);
 router.post('/story/getChapters', storyBooks.getChapters);
 //获取内容接口
 router.post('/story/getContent', storyBooks.getContent);
+// 更多书本
+router.post(`/story/moreBooks`, storyBooks.moreBooks);
 // 搜索书本
 router.post(`/story/searchBooks`, storyBooks.searchBooks);
 // 获取所有书本类型
 router.post(`/story/getTypes`, storyMore.getTypes);
+// 想看的小说
+router.post(`/story/setStory`, storyCommon.setStory);
+// 建议
+router.post(`/story/setOptions`, storyCommon.setOptions);
 
 /**
  * 小说后台管理系统的接口
@@ -47,5 +55,9 @@ router.post(`/deleteChapter`, Chapters.deleteChapter);
 router.post(`/getChapters`, Chapters.getChapters);
 // 获取章节详情
 router.post(`/getChapterDetail`, Chapters.getChapterDetail);
+// 想看的小说日志
+router.post(`/storyLogs`, Logs.storyLogs);
+// 建议日志
+router.post(`/optionsLogs`, Logs.optionsLogs);
 
 module.exports =  router

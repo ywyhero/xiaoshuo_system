@@ -97,6 +97,7 @@ const createBook = async (ctx, next) => {
         const like = ctx.request.body.like;
         const isOver = ctx.request.body.isOver;
         const description = ctx.request.body.description;
+        const keyword = ctx.request.body.keyword;
         if(bookId) {
             const booksInfo = {
                 author,
@@ -105,6 +106,7 @@ const createBook = async (ctx, next) => {
                 typeName,
                 imgUrl: imgUrl ? imgUrl : `${config.address}:3000/upload/images/default.jpg`,
                 like,
+                keyword,
                 isOver,
                 description
             }
@@ -124,6 +126,7 @@ const createBook = async (ctx, next) => {
                 createTime: new Date(),
                 name,
                 type,
+                keyword,
                 typeName,
                 chapters,
                 imgUrl: imgUrl ? imgUrl : `${config.address}:3000/upload/images/default.jpg`,
@@ -194,6 +197,7 @@ const searchBooks = async (ctx, next) => {
                 typeName: book.typeName,
                 imgUrl: book.imgUrl,
                 like: book.like,
+                keyword: book.keyword,
                 isOver: book.isOver,
                 readCount: book.readCount,
                 description: book.description,

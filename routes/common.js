@@ -50,5 +50,6 @@ const logout = async (ctx, next) => {
         }
     }
 }
+
 exports.login = login;
 exports.logout = logout;

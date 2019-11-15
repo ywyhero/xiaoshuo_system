@@ -14,6 +14,7 @@ const getBooks = async (ctx, next) => {
                 typeName: books[i].typeName,
                 isOver: books[i].isOver,
                 author: books[i].author,
+                keyword: books[i].keyword,
                 description: books[i].description
             }
             allBooks.push(obj)
@@ -90,7 +91,7 @@ const getContent = async (ctx, next) => {
         chapter: chapter
     }
 }
-const searchBooks = async (ctx, next) => {
+const moreBooks = async (ctx, next) => {
     const type = ctx.request.body.type || null;
     const isOver = ctx.request.body.isOver || null;
     const like = ctx.request.body.like || null;
@@ -125,6 +126,7 @@ const searchBooks = async (ctx, next) => {
             isOver: list.isOver,
             like: list.like,
             type: list.type,
+            keyword: list.keyword,
             readCount: list.readCount,
             imgUrl: list.imgUrl,
             typeName: list.typeName,
@@ -143,7 +145,35 @@ const searchBooks = async (ctx, next) => {
     }
 
 }
+const searchBooks = async (ctx, next) => {
+    const searchVal = ctx.request.body.searchVal;
+    const lists = await Schemas.books.find({
+        name: {$regex: searchVal}
+    })
+    const books = [];
+    for(let list of lists) {
+        let obj = {
+            bookId: list.bookId,
+            imgUrl: list.imgUrl,
+            description: list.description,
+            author: list.author,
+            typeName: list.typeName,
+            typeId: list.typeId,
+            like: list.like,
+            keyword: list.keyword,
+            isOver: list.isOver,
+            name: list.name,
+            createTime: list.createTime
+        }
+        books.push(obj)
+    }
+    ctx.body = {
+        code: 200,
+        books: books
+    }
+}
 exports.getBooks = getBooks;
 exports.getChapters = getChapters;
 exports.getContent = getContent;
+exports.moreBooks = moreBooks;
 exports.searchBooks = searchBooks;

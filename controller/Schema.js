@@ -10,6 +10,7 @@ const booksSchema = new mongoose.Schema({
     bookId: Number,
     author: String,
     name: String,
+    keyword: String,
     type: Number,
     typeName: String,
     imgUrl: String,
@@ -22,6 +23,18 @@ const booksSchema = new mongoose.Schema({
 })
 //查找小说类型
 const typesSchema = new mongoose.Schema({})
+//想看的小说
+const storySchema = new mongoose.Schema({
+    name: String,
+    createTime: Date,
+})
+//建议
+const optionsSchema = new mongoose.Schema({
+    option: String,
+    createTime: Date,
+})
 exports.login = db.model('users', loginSchema)
 exports.books = db.model('books', booksSchema)
 exports.types = db.model('types', typesSchema)
+exports.stories = db.model('stories', storySchema)
+exports.options = db.model('options', optionsSchema)
