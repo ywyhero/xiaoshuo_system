@@ -16,19 +16,19 @@ onerror(app)
 //     console.log(ctx)
 //     next()
 // })
-const origin = config.address === 'https://www.vinekan.com' ? `${config.address}` : 'http://www.vinekan.com';
+// const origin = config.address === 'https://www.vinekan.com' ? `${config.address}` : `${config.address}:${config.prodport}`;
 // console.log(origin)
 app.use(cors({
     origin:   function(ctx) { //设置允许来自指定域名请求
         console.log(ctx)
-        const whiteList = [`${config.address}:3080`,`${config.address}:3000`,'http://www.vinekan.com:3000','https://www.vinekan.com:3000']; //可跨域白名单
+        const whiteList = [`${config.address}:3080`,'http://www.vinekan.com:3000','https://www.vinekan.com:3000']; //可跨域白名单
         let url = ctx.header.referer && ctx.header.referer.substr(0, ctx.header.referer.length - 1);
         console.log(url)
         if(whiteList.includes(url)){
             console.log(url)
             return url //注意，这里域名末尾不能带/，否则不成功，所以在之前我把/通过substr干掉了
         }
-        return origin //默认允许本地请求3000端口可跨域
+        // return origin //默认允许本地请求3000端口可跨域
     },
     maxAge: 5, //指定本次预检请求的有效期，单位为秒。
     credentials: true, //是否允许发送Cookie
