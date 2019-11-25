@@ -14,7 +14,7 @@ onerror(app)
 const origin = config.address === 'http://www.vinekan.com' ? `${config.address}` : `${config.address}:${config.prodport}`;
 app.use(cors({
     origin:   function(ctx) { //设置允许来自指定域名请求
-        const whiteList = [`${config.address}:3080`,`${config.address}:3000`]; //可跨域白名单
+        const whiteList = [`${config.address}:3080`,`${config.address}:3000`,'http://www.vinekan.com:3000','https://www.vinekan.com:3000']; //可跨域白名单
         let url = ctx.header.referer && ctx.header.referer.substr(0, ctx.header.referer.length - 1);
         if(whiteList.includes(url)){
             console.log(url)
