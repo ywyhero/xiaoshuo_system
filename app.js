@@ -12,12 +12,7 @@ const jwtKoa  = require('koa-jwt');      // 用于路由权限控制
 const port = process.env.PORT || config.port;
 const jwtMethod = require('./utils/index.js');
 onerror(app)
-// app.use(async(ctx, next)=>{
-//     console.log(ctx)
-//     next()
-// })
 const origin = config.address === 'https://www.vinekan.com' ? config.address : `${config.address}:${config.prodport}`;
-console.log(origin)
 app.use(cors({
     origin:   function(ctx) { //设置允许来自指定域名请求
         console.log(ctx)
