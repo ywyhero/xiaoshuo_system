@@ -1,6 +1,7 @@
 const Koa = require('koa')
 const app = new Koa()
 
+
 const cors = require('koa2-cors') //用于跨域
 const json = require('koa-json')
 const onerror = require('koa-onerror')
@@ -11,7 +12,7 @@ const jwtKoa  = require('koa-jwt');      // 用于路由权限控制
 const port = process.env.PORT || config.port;
 const jwtMethod = require('./utils/index.js');
 onerror(app)
-const origin = config.address === 'http://www.vinekan.com' ? `${config.address}` : `${config.address}:${config.prodport}`;
+const origin = config.address === 'https://www.vinekan.com' ? `${config.address}` : `${config.address}:${config.prodport}`;
 app.use(cors({
     origin:   function(ctx) { //设置允许来自指定域名请求
         const whiteList = [`${config.address}:3080`,`${config.address}:3000`,'http://www.vinekan.com:3000','https://www.vinekan.com:3000']; //可跨域白名单
@@ -94,7 +95,20 @@ app.use(koabody({
 app.on('error', function(err, ctx) {
   console.log('server error', err, ctx)
 })
-
-module.exports = app.listen(port, () => {
-  console.log(`Listening on http://localhost:${port}`)
-})
+if(config.address === 'https://www.vinekan.com') {
+    const https = require("https");//https服务
+    const fs = require("fs");
+    const enforceHttps = require('koa-sslify').default;
+    app.use(enforceHttps());
+    
+    const options = {
+        key: fs.readFileSync('./3058590_www.vinekan.com.key'),
+        cert: fs.readFileSync('./3058590_www.vinekan.com.pem'),
+    };
+    
+    module.exports = https.createServer(options, app.callback()).listen(port); 
+} else {
+    module.exports = app.listen(port, () => {
+        console.log(`Listening on http://localhost:${port}`)
+    })
+}
