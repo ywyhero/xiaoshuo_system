@@ -96,6 +96,7 @@ app.use(koabody({
 app.on('error', function(err, ctx) {
   console.log('server error', err, ctx)
 })
+console.log(origin)
 if(origin === 'https://www.vinekan.com') {
     const https = require("https");//https服务
     const fs = require("fs");
