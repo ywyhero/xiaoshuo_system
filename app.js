@@ -16,16 +16,15 @@ onerror(app)
 //     console.log(ctx)
 //     next()
 // })
-// const origin = config.address === 'https://www.vinekan.com' ? `${config.address}` : `${config.address}:${config.prodport}`;
+let origin = ''
 // console.log(origin)
 app.use(cors({
     origin:   function(ctx) { //设置允许来自指定域名请求
         console.log(ctx)
         const whiteList = [`${config.address}:3080`,'http://www.vinekan.com','https://www.vinekan.com']; //可跨域白名单
         let url = ctx.header.referer && ctx.header.referer.substr(0, ctx.header.referer.length - 1);
-        console.log(url)
         if(whiteList.includes(url)){
-            console.log(url)
+            origin = url;
             return url //注意，这里域名末尾不能带/，否则不成功，所以在之前我把/通过substr干掉了
         }
         // return origin //默认允许本地请求3000端口可跨域
@@ -102,7 +101,7 @@ app.use(koabody({
 app.on('error', function(err, ctx) {
   console.log('server error', err, ctx)
 })
-if(config.address === 'https://www.vinekan.com') {
+if(origin === 'https://www.vinekan.com') {
     const https = require("https");//https服务
     const fs = require("fs");
     const enforceHttps = require('koa-sslify').default;
