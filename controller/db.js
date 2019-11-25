@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://127.0.0.1:27017/xiaoshuo',{
+mongoose.connect('mongodb://vine:900808&127.0.0.1:27017/xiaoshuo',{
     useNewUrlParser: true,
     useUnifiedTopology: true 
 });
