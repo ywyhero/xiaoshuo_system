@@ -1,7 +1,5 @@
 const Koa = require('koa')
 const app = new Koa()
-
-
 const cors = require('koa2-cors') //用于跨域
 const json = require('koa-json')
 const onerror = require('koa-onerror')
@@ -15,7 +13,7 @@ onerror(app)
 const origin = config.address === 'https://www.vinekan.com' ? config.address : `${config.address}:${config.prodport}`;
 app.use(cors({
     origin:   function(ctx) { //设置允许来自指定域名请求
-        const whiteList = [`${config.address}:3080`,`${config.address}:3000`,'http://www.vinekan.com','https://www.vinekan.com']; //可跨域白名单
+        const whiteList = [`${config.address}:3080`,`${config.address}:8080`,'https://www.vinekan.com']; //可跨域白名单
         let url = ctx.header.referer && ctx.header.referer.substr(0, ctx.header.referer.length - 1);
         if(whiteList.includes(url)){
             return url //注意，这里域名末尾不能带/，否则不成功，所以在之前我把/通过substr干掉了
