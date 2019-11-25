@@ -12,14 +12,15 @@ const jwtKoa  = require('koa-jwt');      // 用于路由权限控制
 const port = process.env.PORT || config.port;
 const jwtMethod = require('./utils/index.js');
 onerror(app)
-app.use(async(ctx, next)=>{
-    console.log(ctx)
-    next()
-})
-const origin = config.address === 'https://www.vinekan.com' ? `${config.address}` : `${config.address}:${config.prodport}`;
-console.log(origin)
+// app.use(async(ctx, next)=>{
+//     console.log(ctx)
+//     next()
+// })
+// const origin = config.address === 'https://www.vinekan.com' ? `${config.address}` : `${config.address}:${config.prodport}`;
+// console.log(origin)
 app.use(cors({
     origin:   function(ctx) { //设置允许来自指定域名请求
+        console.log(ctx)
         const whiteList = [`${config.address}:3080`,`${config.address}:3000`,'http://www.vinekan.com:3000','https://www.vinekan.com:3000']; //可跨域白名单
         let url = ctx.header.referer && ctx.header.referer.substr(0, ctx.header.referer.length - 1);
         console.log(url)
