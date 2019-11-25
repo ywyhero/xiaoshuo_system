@@ -16,7 +16,7 @@ onerror(app)
 //     console.log(ctx)
 //     next()
 // })
-// const origin = config.address === 'https://www.vinekan.com' ? `${config.address}` : `${config.address}:${config.prodport}`;
+const origin = config.address === 'https://www.vinekan.com' ? `${config.address}` : 'http://www.vinekan.com';
 // console.log(origin)
 app.use(cors({
     origin:   function(ctx) { //设置允许来自指定域名请求
