@@ -12,6 +12,7 @@ const jwtKoa  = require('koa-jwt');      // 用于路由权限控制
 const port = process.env.PORT || config.port;
 const jwtMethod = require('./utils/index.js');
 onerror(app)
+let origin = '';
 app.use(cors({
     origin:   function(ctx) { //设置允许来自指定域名请求
         console.log(ctx)
