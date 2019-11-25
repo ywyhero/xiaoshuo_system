@@ -14,6 +14,7 @@ const jwtMethod = require('./utils/index.js');
 onerror(app)
 app.use(async(ctx, next)=>{
     console.log(ctx)
+    next()
 })
 const origin = config.address === 'https://www.vinekan.com' ? `${config.address}` : `${config.address}:${config.prodport}`;
 console.log(origin)
