@@ -15,11 +15,24 @@ const booksSchema = new mongoose.Schema({
     typeName: String,
     imgUrl: String,
     description: String,
-    chapters: [],
     isOver: Number,
     like: Number,
     readCount: Number,
-    createTime: Date
+    createTime: Number
+})
+//创建小说章节
+const chapterSchema = new mongoose.Schema({
+    bookId: Number,
+    chapterId: Number,
+    chapterName: String,
+    createTime: Number
+})
+//创建小说内容
+const contentSchema = new mongoose.Schema({
+    bookId: Number,
+    chapterId: Number,
+    content: String,
+    createTime: Number
 })
 //查找小说类型
 const typesSchema = new mongoose.Schema({})
@@ -35,6 +48,8 @@ const optionsSchema = new mongoose.Schema({
 })
 exports.login = db.model('users', loginSchema)
 exports.books = db.model('books', booksSchema)
+exports.chapters = db.model('chapters', chapterSchema)
+exports.contents = db.model('contents', contentSchema)
 exports.types = db.model('types', typesSchema)
 exports.stories = db.model('stories', storySchema)
 exports.options = db.model('options', optionsSchema)

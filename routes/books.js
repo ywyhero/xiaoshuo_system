@@ -118,17 +118,15 @@ const createBook = async (ctx, next) => {
                 }
             }
         } else {
-            const chapters = [];
             const newBookId = await getId();
             const booksInfo = {
                 bookId: newBookId,
                 author,
-                createTime: new Date(),
+                createTime: Math.round(new Date().getTime() / 1000),
                 name,
                 type,
                 keyword,
                 typeName,
-                chapters,
                 imgUrl: imgUrl ? imgUrl : `${config.address}:3000/upload/images/default.jpg`,
                 like,
                 isOver,
@@ -187,28 +185,10 @@ const searchBooks = async (ctx, next) => {
         }
         const books = await Schemas.books.find(findObj).limit(pageSize).skip((pageNo - 1) * pageSize);
         const total = await Schemas.books.find(findObj).countDocuments();
-        const lists = [];
-        for(let book of books) {
-            let obj = {
-                bookId: book.bookId,
-                name: book.name,
-                author: book.author,
-                type: book.type,
-                typeName: book.typeName,
-                imgUrl: book.imgUrl,
-                like: book.like,
-                keyword: book.keyword,
-                isOver: book.isOver,
-                readCount: book.readCount,
-                description: book.description,
-                createTime: new Date(book.createTime).getTime()
-            }
-            lists.push(obj);
-        }
         ctx.body = {
             code: 200,
             total: total,
-            lists: lists
+            lists: books
         }
     } catch (e) {
         console.log(e)

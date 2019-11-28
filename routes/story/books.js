@@ -3,34 +3,17 @@ const Schemas = require('../../controller/Schema');
 const getBooks = async (ctx, next) => {
     const books = await Schemas.books.find({});
     books.reverse();
-    const allBooks = [];
-    for(let i = 0; i < 100; i++) {
-        if(books[i]) {
-            let obj = {
-                bookId: books[i].bookId,
-                name: books[i].name,
-                type: books[i].type,
-                imgUrl: books[i].imgUrl,
-                typeName: books[i].typeName,
-                isOver: books[i].isOver,
-                author: books[i].author,
-                keyword: books[i].keyword,
-                description: books[i].description
-            }
-            allBooks.push(obj)
-        };
-    }
     const newBooks = [],
           overBooks = [],
           tryBooks = [];
     for(let i = 0; i < 6; i++) {
         if(books[i]) {
-            newBooks.push(allBooks[i]);
-            if(allBooks[i].isOver === 2) {
-                overBooks.push(allBooks[i])
+            newBooks.push(books[i]);
+            if(books[i].isOver === 2) {
+                overBooks.push(books[i])
             }
-            if(allBooks[i].isOver === 1) {
-                tryBooks.push(allBooks[i])
+            if(books[i].isOver === 1) {
+                tryBooks.push(books[i])
             }
         }
         
@@ -57,35 +40,33 @@ const getBooks = async (ctx, next) => {
 const getChapters = async (ctx, next) => {
     const bookId = ctx.request.body.bookId;
     const book = await Schemas.books.findOne({bookId: bookId});
+    const chapters = await Schemas.chapters.find({bookId, bookId})
     let readCount = book.readCount;
     readCount = readCount + 1;
     await Schemas.books.updateOne({bookId: bookId}, {readCount: readCount});
-    const chapters = book.chapters;
-    const newChapters = [];
-    for(let chapter of chapters) {
-        let obj = {
-            chapterId: chapter.chapterId,
-            name: chapter.name
-        }
-        newChapters.push(obj)
-    }
     ctx.body = {
         code: 200,
-        chapters: newChapters
+        chapters: chapters
     }
 }
 const getContent = async (ctx, next) => {
     const bookId = ctx.request.body.bookId;
     const chapterId = Number(ctx.request.body.chapterId);
-    const book = await Schemas.books.findOne({bookId: bookId});
-    const chapters = book.chapters;
+    const chapters = await Schemas.chapters.find({bookId: bookId});
+    const content = await Schemas.contents.findOne({bookId: bookId, chapterId: chapterId});
     const index = chapters.findIndex(v => v.chapterId === chapterId);
     let isLast = false;
     if(index === (chapters.length - 1)) {
         isLast = true
     }
     let chapter = chapters.find(v => v.chapterId === chapterId);
-    chapter = Object.assign(chapter, {isLast: isLast});
+    const chapterObj = {
+        bookId: chapter.bookId,
+        chapterId: chapter.chapterId,
+        chapterName: chapter.chapterName,
+        createTime: chapter.createTime,
+    }
+    chapter = Object.assign(chapterObj, {isLast: isLast}, {content: content.content});
     ctx.body = {
         code: 200,
         chapter: chapter
@@ -111,28 +92,27 @@ const moreBooks = async (ctx, next) => {
     const total = await Schemas.books.find(searchInfo).countDocuments();
     const books = [];
     for(let list of lists) {
-        const chapters = list.chapters;
+        const chapters = await Schemas.chapters.find({bookId: list.bookId});
         const chapter = chapters[chapters.length - 1];
         const newChapter = {
             chapterId: chapter && chapter.chapterId,
-            name: chapter && chapter.name
+            chapterName: chapter && chapter.chapterName
         }
-        let obj = {
-            author: list.author,
+        const listObj = {
             bookId: list.bookId,
-            createTime: Math.floor(new Date(list.createTime).getTime() / 1000),
-            description: list.description,
+            author: list.author,
+            createTime: list.createTime,
             name: list.name,
-            isOver: list.isOver,
-            like: list.like,
             type: list.type,
             keyword: list.keyword,
-            readCount: list.readCount,
-            imgUrl: list.imgUrl,
             typeName: list.typeName,
-            newChapter: newChapter,
-            isLast: list.isLast
+            imgUrl: list.imgUrl,
+            like: list.like,
+            isOver: list.isOver,
+            readCount: list.readCount,
+            description: list.description,
         }
+        let obj = Object.assign(listObj, {newChapter: newChapter});
         books.push(obj)
     }
     ctx.body = {
@@ -147,26 +127,9 @@ const moreBooks = async (ctx, next) => {
 }
 const searchBooks = async (ctx, next) => {
     const searchVal = ctx.request.body.searchVal;
-    const lists = await Schemas.books.find({
+    const books = await Schemas.books.find({
         name: {$regex: searchVal}
     })
-    const books = [];
-    for(let list of lists) {
-        let obj = {
-            bookId: list.bookId,
-            imgUrl: list.imgUrl,
-            description: list.description,
-            author: list.author,
-            typeName: list.typeName,
-            typeId: list.typeId,
-            like: list.like,
-            keyword: list.keyword,
-            isOver: list.isOver,
-            name: list.name,
-            createTime: list.createTime
-        }
-        books.push(obj)
-    }
     ctx.body = {
         code: 200,
         books: books
