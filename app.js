@@ -93,6 +93,7 @@ app.on('error', function(err, ctx) {
   console.log('server error', err, ctx)
 })
 if(origin === 'https://www.vinekan.com') {
+    console.log(13123)
     const https = require("https");//https服务
     const fs = require("fs");
     const enforceHttps = require('koa-sslify').default;
@@ -105,6 +106,7 @@ if(origin === 'https://www.vinekan.com') {
     
     module.exports = https.createServer(options, app.callback()).listen(port); 
 } else {
+    console.log(44444)
     module.exports = app.listen(port, () => {
         console.log(`Listening on http://localhost:${port}`)
     })
