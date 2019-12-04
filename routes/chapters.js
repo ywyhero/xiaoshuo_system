@@ -136,6 +136,7 @@ const addChapters = (ctx, next) => {
                     const chapterName = $(lis[i]).children().html();
                     chapters.push(chapterName);
                     const hasChapter = hasChapters.filter(v => v.chapterId === i + 1);
+                    console.log(hasChapter)
                     if(hasChapter.length > 0) {
                         continue
                     } else {
@@ -145,6 +146,7 @@ const addChapters = (ctx, next) => {
                             chapterName: chapterName,
                             createTime: Math.round(new Date().getTime() / 1000)
                         }
+                        console.log(chapterName)
                         await Schemas.chapters.create(chapterObj)
                         const chapterUrl = $(lis[i]).children().attr('href');
                         timer = setTimeout(() => {
@@ -172,6 +174,7 @@ const addChapters = (ctx, next) => {
                 if(!content) {
                     return getContent(url, i)
                 }
+                console.log(1)
                 const contentObj = {
                     bookId: bookId,
                     chapterId: i + 1,
