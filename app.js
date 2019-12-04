@@ -10,10 +10,10 @@ const jwtKoa  = require('koa-jwt');      // 用于路由权限控制
 const port = process.env.PORT || config.port;
 const jwtMethod = require('./utils/index.js');
 onerror(app)
-const origin = config.address === 'https://www.vinekan.com' ? config.address : `${config.address}:${config.prodport}`;
+const origin = config.address === 'http://www.vinekan.com' ? config.address : `${config.address}:${config.prodport}`;
 app.use(cors({
     origin:   function(ctx) { //设置允许来自指定域名请求
-        const whiteList = [`${config.address}:3080`,`${config.address}:8080`,'https://www.vinekan.com']; //可跨域白名单
+        const whiteList = [`${config.address}:3080`,`${config.address}:8080`,'http://www.vinekan.com']; //可跨域白名单
         let url = ctx.header.referer && ctx.header.referer.substr(0, ctx.header.referer.length - 1);
         if(whiteList.includes(url)){
             return url //注意，这里域名末尾不能带/，否则不成功，所以在之前我把/通过substr干掉了
@@ -92,8 +92,8 @@ app.use(koabody({
 app.on('error', function(err, ctx) {
   console.log('server error', err, ctx)
 })
-if(origin === 'https://www.vinekan.com') {
-    const https = require("https");//https服务
+if(origin === 'http://www.vinekan.com') {
+    const http = require("http");//https服务
     const fs = require("fs");
     const enforceHttps = require('koa-sslify').default;
     app.use(enforceHttps());
@@ -103,7 +103,7 @@ if(origin === 'https://www.vinekan.com') {
         cert: fs.readFileSync('./3058590_www.vinekan.com.pem'),
     };
     
-    module.exports = https.createServer(options, app.callback()).listen(port); 
+    module.exports = http.createServer(options, app.callback()).listen(port); 
 } else {
     module.exports = app.listen(port, () => {
         console.log(`Listening on http://localhost:${port}`)
