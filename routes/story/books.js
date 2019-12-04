@@ -40,7 +40,8 @@ const getBooks = async (ctx, next) => {
 const getChapters = async (ctx, next) => {
     const bookId = ctx.request.body.bookId;
     const book = await Schemas.books.findOne({bookId: bookId});
-    const chapters = await Schemas.chapters.find({bookId, bookId})
+    const chapters = await Schemas.chapters.find({bookId, bookId});
+    console.log(book)
     let readCount = book.readCount;
     readCount = readCount + 1;
     await Schemas.books.updateOne({bookId: bookId}, {readCount: readCount});
