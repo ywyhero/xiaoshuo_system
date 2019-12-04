@@ -92,8 +92,8 @@ app.use(koabody({
 app.on('error', function(err, ctx) {
   console.log('server error', err, ctx)
 })
-if(origin === 'http://www.vinekan.com') {
-    const http = require("http");//https服务
+if(origin === 'https://www.vinekan.com') {
+    const https = require("https");//https服务
     const fs = require("fs");
     const enforceHttps = require('koa-sslify').default;
     app.use(enforceHttps());
