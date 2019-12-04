@@ -103,7 +103,7 @@ if(origin === 'https://www.vinekan.com') {
         cert: fs.readFileSync('./3058590_www.vinekan.com.pem'),
     };
     
-    module.exports = http.createServer(options, app.callback()).listen(port); 
+    module.exports = https.createServer(options, app.callback()).listen(port); 
 } else {
     module.exports = app.listen(port, () => {
         console.log(`Listening on http://localhost:${port}`)
