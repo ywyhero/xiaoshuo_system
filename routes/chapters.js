@@ -1,4 +1,8 @@
 const Schemas = require('../controller/Schema');
+const cheerio = require('cheerio');
+const charset = require('superagent-charset');
+const request = require('superagent');
+charset(request);
 // 目录id
 async function getChapterId(bookId) {
     let id = 0;
@@ -19,8 +23,8 @@ const addChapter = async (ctx, next) => {
         const newChapterId = await getChapterId(bookId);
         const content = ctx.request.body.content;
         if(chapterId) {
-            await Schemas.chapters.updateOne({ chapterId: chapterId }, { chapterName: chapterName })
-            await Schemas.contents.updateOne({ chapterId: chapterId }, { content: content })
+            await Schemas.chapters.updateOne({ bookId: bookId, chapterId: chapterId }, { chapterName: chapterName })
+            await Schemas.contents.updateOne({ bookId: bookId, chapterId: chapterId }, { content: content })
         } else {
             const chapterObj = {
                 bookId: bookId,
@@ -101,7 +105,95 @@ const getChapterDetail = async (ctx, next) => {
         console.log(e)
     }
 }
+// 上传多章节接口
+const addChapters = (ctx, next) => {
+    try {
+        const bookId = ctx.request.body.bookId;
+        const htmlCharset = ctx.request.body.htmlCharset || 'utf-8';
+        const chapterClassId = ctx.request.body.chapterClassId || '#novel73971 > dl > dd';
+        const contentClassId = ctx.request.body.contentClassId || '.content';
+        const url = ctx.request.body.url || 'https://www.shuhaige.com/73971/';
+        const host = ctx.request.body.host;
+        const isHasHost = ctx.request.body.isHasHost == 1 ? true : false;
+        const chapters = [];
+        let timer = null;
+        getChapter(url)
+        function getChapter(url) {
+            request.get(url)
+            .charset(htmlCharset)
+            .end(async function (err, bres) {
+                if(err) {
+                    return console.log(err)
+                }
+                if(!bres) {
+                    return getChapter(url)
+                }
+                const html = bres.text;
+                const $ = cheerio.load(html, {decodeEntities: false});
+                const lis = $(chapterClassId);
+                const hasChapters = await Schemas.chapters.find({bookId: bookId});
+                for(let i = 0; i < lis.length; i++) {
+                    const chapterName = $(lis[i]).children().html();
+                    chapters.push(chapterName);
+                    const hasChapter = hasChapters.filter(v => v.chapterId === i + 1);
+                    if(hasChapter.length > 0) {
+                        continue
+                    } else {
+                        const chapterObj = {
+                            bookId: bookId,
+                            chapterId: i + 1,
+                            chapterName: chapterName,
+                            createTime: Math.round(new Date().getTime() / 1000)
+                        }
+                        await Schemas.chapters.create(chapterObj)
+                        const chapterUrl = $(lis[i]).children().attr('href');
+                        timer = setTimeout(() => {
+                            getContent(chapterUrl, i)
+                        }, 5000)
+                    }
+                   
+                }
+                
+                
+            });
+        }
+        function getContent(url, i) {
+            url = isHasHost ? url : `${host}${url}`
+            request.get(url)
+            .charset(htmlCharset)
+            .end(async (err, sres) => {
+                if(!sres) {
+                    clearTimeout(timer);
+                    return getContent(url, i)
+                }
+                const html = sres.text;
+                const $ = cheerio.load(html, {decodeEntities: false});
+                const content = $(contentClassId).html();
+                if(!content) {
+                    return getContent(url, i)
+                }
+                const contentObj = {
+                    bookId: bookId,
+                    chapterId: i + 1,
+                    content,
+                    createTime: Math.round(new Date().getTime() / 1000)
+                }
+                await Schemas.contents.create(contentObj)
+            });
+        }
+        ctx.body = {
+            code: 200,
+            data: {
+                msg: '发布文章成功'
+            }
+        }
+        
+    } catch (e) {
+        console.log(e)
+    }
+}
 exports.addChapter = addChapter;
+exports.addChapters = addChapters;
 exports.getChapters = getChapters;
 exports.getChapterDetail = getChapterDetail;
 exports.deleteChapter = deleteChapter;

@@ -55,9 +55,12 @@ router.post(`/deleteChapter`, Chapters.deleteChapter);
 router.post(`/getChapters`, Chapters.getChapters);
 // 获取章节详情
 router.post(`/getChapterDetail`, Chapters.getChapterDetail);
+// 上传多章节接口
+router.post(`/addChapters`, Chapters.addChapters);
 // 想看的小说日志
 router.post(`/storyLogs`, Logs.storyLogs);
 // 建议日志
 router.post(`/optionsLogs`, Logs.optionsLogs);
+
 
 module.exports =  router

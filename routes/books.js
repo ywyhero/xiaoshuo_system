@@ -204,6 +204,8 @@ const deleteBook = async (ctx, next) => {
             fs.unlinkSync(`public/upload/images/${image}`) //删除对应的小说封面图
         }
         await Schemas.books.deleteOne({ bookId: bookId });
+        await Schemas.chapters.deleteMany({ bookId: bookId});
+        await Schemas.contents.deleteMany({ bookId: bookId});
         ctx.body = {
             code: 200,
             data: {
