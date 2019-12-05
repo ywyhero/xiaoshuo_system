@@ -22,9 +22,22 @@ const addChapter = async (ctx, next) => {
         const chapterId = Number(ctx.request.body.chapterId);
         const newChapterId = await getChapterId(bookId);
         const content = ctx.request.body.content;
-        if(chapterId) {
+        const hasChapter = await Schemas.chapters.find({ bookId: bookId, chapterId: chapterId })
+        const hasContent = await Schemas.contents.find({ bookId: bookId, chapterId: chapterId })
+
+        if(hasChapter.length > 0) {
             await Schemas.chapters.updateOne({ bookId: bookId, chapterId: chapterId }, { chapterName: chapterName })
-            await Schemas.contents.updateOne({ bookId: bookId, chapterId: chapterId }, { content: content })
+            if(hasContent.length > 0) {
+                await Schemas.contents.updateOne({ bookId: bookId, chapterId: chapterId }, { content: content })
+            } else {
+                const contentObj = {
+                    bookId: bookId,
+                    chapterId: chapterId,
+                    content,
+                    createTime: Math.round(new Date().getTime() / 1000)
+                }
+                await Schemas.contents.create(contentObj)
+            }
         } else {
             const chapterObj = {
                 bookId: bookId,
