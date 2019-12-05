@@ -19,7 +19,7 @@ const addChapter = async (ctx, next) => {
     try {
         const bookId = ctx.request.body.bookId;
         const chapterName = ctx.request.body.name;
-        const chapterId = Number(ctx.request.body.chapterId);
+        const chapterId = Number(ctx.request.body.chapterId || 0);
         const newChapterId = await getChapterId(bookId);
         const content = ctx.request.body.content;
         const hasChapter = await Schemas.chapters.find({ bookId: bookId, chapterId: chapterId })
