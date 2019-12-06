@@ -137,7 +137,6 @@ const addChapters = (ctx, next) => {
                 if(err) {
                     return console.log(err)
                 }
-                console.log(bres)
                 if(!bres) {
                     return getChapter(url)
                 }
@@ -147,6 +146,7 @@ const addChapters = (ctx, next) => {
                 const lis = $(chapterClassId);
                 for(let i = 0; i < lis.length; i++) {
                     const chapterName = $(lis[i]).children().html();
+                    console.log(chapterName)
                     const hasChapter = await Schemas.chapters.findOne({bookId: bookId, chapterId: i + 1});
                     if(!hasChapter) {
                         const chapterObj = {
