@@ -164,8 +164,10 @@ const addChapters = (ctx, next) => {
                 for(let i = 0; i < promiseTasks.length; i++) {
                     let task = promiseTasks[i];
                     const hasContent = await Schemas.contents.findOne({bookId: bookId, chapterId: i + 1});
+                    console.log(hasContent)
                     if(!hasContent) { 
                         let content = await task();
+                        console.log(content)
                         const contentObj = {
                             bookId: bookId,
                             chapterId: i + 1,
