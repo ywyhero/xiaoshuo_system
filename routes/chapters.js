@@ -122,19 +122,15 @@ const getChapterDetail = async (ctx, next) => {
 const addChapters = (ctx, next) => {
     try {
         const bookId = ctx.request.body.bookId;
-        const htmlCharset = ctx.request.body.htmlCharset || 'utf-8';
-        const chapterClassId = ctx.request.body.chapterClassId || '#novel73971 > dl > dd';
-        const contentClassId = ctx.request.body.contentClassId || '.content';
-        const url = ctx.request.body.url || 'https://www.shuhaige.com/73971/';
+        const htmlCharset = ctx.request.body.htmlCharset;
+        const chapterClassId = ctx.request.body.chapterClassId;
+        const contentClassId = ctx.request.body.contentClassId;
+        const url = ctx.request.body.url;
         const host = ctx.request.body.host;
-        const isHasHost = ctx.request.body.isHasHost == 1 ? true : false;
-        const chapters = [];
-        let timer = null;
         const promiseTasks = [];
         getChapter(url)
         function getChapter(url) {
             request.get(url)
-            .charset(htmlCharset)
             .end(async function (err, bres) {
                 if(err) {
                     return console.log(err)
@@ -145,14 +141,10 @@ const addChapters = (ctx, next) => {
                 const html = bres.text;
                 const $ = cheerio.load(html, {decodeEntities: false});
                 const lis = $(chapterClassId);
-                const hasChapters = await Schemas.chapters.find({bookId: bookId});
                 for(let i = 0; i < lis.length; i++) {
                     const chapterName = $(lis[i]).children().html();
-                    chapters.push(chapterName);
-                    const hasChapter = hasChapters.filter(v => v.chapterId === i + 1);
-                    if(hasChapter.length > 0) {
-                        continue
-                    } else {
+                    const hasChapter = await Schemas.chapters.findOne({bookId: bookId, chapterId: i + 1});
+                    if(!hasChapter) {
                         const chapterObj = {
                             bookId: bookId,
                             chapterId: i + 1,
@@ -160,20 +152,24 @@ const addChapters = (ctx, next) => {
                             createTime: Math.round(new Date().getTime() / 1000)
                         }
                         await Schemas.chapters.create(chapterObj)
-                        const chapterUrl = $(lis[i]).children().attr('href');
-                        promiseTasks.push(getContent(chapterUrl, i))
                     }
+                    const chapterUrl = $(lis[i]).children().attr('href');
+                    promiseTasks.push(getContent(chapterUrl, i))
                 }
+              
                 for(let i = 0; i < promiseTasks.length; i++) {
                     let task = promiseTasks[i];
-                    let content = await task();
-                    const contentObj = {
-                        bookId: bookId,
-                        chapterId: i + 1,
-                        content,
-                        createTime: Math.round(new Date().getTime() / 1000)
+                    const hasContent = await Schemas.contents.findOne({bookId: bookId, chapterId: i + 1});
+                    if(!hasContent) { 
+                        let content = await task();
+                        const contentObj = {
+                            bookId: bookId,
+                            chapterId: i + 1,
+                            content,
+                            createTime: Math.round(new Date().getTime() / 1000)
+                        }
+                        await Schemas.contents.create(contentObj)
                     }
-                    await Schemas.contents.create(contentObj)
                 }
                 
             });
