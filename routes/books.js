@@ -200,7 +200,7 @@ const deleteBook = async (ctx, next) => {
         const bookId = ctx.request.body.bookId;
         const book = await Schemas.books.findOne({ bookId: bookId });
         const image = book.imgUrl.split('/images/')[1];
-        if(image !== 'default.jpg') {
+        if(image !== 'default.jpg' && fs.existsSync(`public/upload/images/${image}`)) {
             fs.unlinkSync(`public/upload/images/${image}`) //删除对应的小说封面图
         }
         await Schemas.books.deleteOne({ bookId: bookId });
