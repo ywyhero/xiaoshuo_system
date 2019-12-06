@@ -130,6 +130,7 @@ const addChapters = (ctx, next) => {
         const isHasHost = ctx.request.body.isHasHost == 1 ? true : false;
         const chapters = [];
         let timer = null;
+        const promiseTasks = [];
         getChapter(url)
         function getChapter(url) {
             request.get(url)
@@ -149,7 +150,6 @@ const addChapters = (ctx, next) => {
                     const chapterName = $(lis[i]).children().html();
                     chapters.push(chapterName);
                     const hasChapter = hasChapters.filter(v => v.chapterId === i + 1);
-                    console.log(hasChapter)
                     if(hasChapter.length > 0) {
                         continue
                     } else {
@@ -159,43 +159,47 @@ const addChapters = (ctx, next) => {
                             chapterName: chapterName,
                             createTime: Math.round(new Date().getTime() / 1000)
                         }
-                        console.log(chapterName)
                         await Schemas.chapters.create(chapterObj)
                         const chapterUrl = $(lis[i]).children().attr('href');
-                        timer = setTimeout(() => {
-                            getContent(chapterUrl, i)
-                        }, 5000)
+                        promiseTasks.push(getContent(chapterUrl, i))
                     }
-                   
                 }
-                
+                for(let i = 0; i < promiseTasks.length; i++) {
+                    let task = promiseTasks[i];
+                    let content = await task();
+                    const contentObj = {
+                        bookId: bookId,
+                        chapterId: i + 1,
+                        content,
+                        createTime: Math.round(new Date().getTime() / 1000)
+                    }
+                    await Schemas.contents.create(contentObj)
+                }
                 
             });
         }
         function getContent(url, i) {
-            url = isHasHost ? url : `${host}${url}`
-            request.get(url)
-            .charset(htmlCharset)
-            .end(async (err, sres) => {
-                if(!sres) {
-                    clearTimeout(timer);
-                    return getContent(url, i)
-                }
-                const html = sres.text;
-                const $ = cheerio.load(html, {decodeEntities: false});
-                const content = $(contentClassId).html();
-                if(!content) {
-                    return getContent(url, i)
-                }
-                console.log(1)
-                const contentObj = {
-                    bookId: bookId,
-                    chapterId: i + 1,
-                    content,
-                    createTime: Math.round(new Date().getTime() / 1000)
-                }
-                await Schemas.contents.create(contentObj)
-            });
+            url = url.includes(host) ? url : `${host}${url}`;
+            const p = function () {
+                return new Promise((resolve, reject) => {
+                    request.get(url)
+                    .charset(htmlCharset)
+                    .end(async (err, sres) => {
+                        if(!sres) {
+                            return getContent(url, i)
+                        }
+                        const html = sres.text;
+                        const $ = cheerio.load(html, {decodeEntities: false});
+                        const content = $(contentClassId).html();
+                        if(!content) {
+                            return getContent(url, i)
+                        }
+                        resolve(content)
+                    });
+                })
+            }
+            return p
+           
         }
         ctx.body = {
             code: 200,
