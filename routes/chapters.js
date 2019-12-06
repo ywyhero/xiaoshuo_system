@@ -123,6 +123,7 @@ const addChapters = (ctx, next) => {
     try {
         const bookId = ctx.request.body.bookId;
         const htmlCharset = ctx.request.body.htmlCharset;
+        console.log(htmlCharset)
         const chapterClassId = ctx.request.body.chapterClassId;
         const contentClassId = ctx.request.body.contentClassId;
         const url = ctx.request.body.url;
