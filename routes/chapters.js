@@ -135,9 +135,11 @@ const addChapters = (ctx, next) => {
                 if(err) {
                     return console.log(err)
                 }
+                console.log(bres)
                 if(!bres) {
                     return getChapter(url)
                 }
+               
                 const html = bres.text;
                 const $ = cheerio.load(html, {decodeEntities: false});
                 const lis = $(chapterClassId);
