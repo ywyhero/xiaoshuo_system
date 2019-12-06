@@ -1,7 +1,7 @@
 const Schemas = require('../controller/Schema');
 const cheerio = require('cheerio');
-const charset = require('superagent-charset');
-// const request = require('superagent');
+// const charset = require('superagent-charset');
+const request = require('superagent');
 // charset(request);
 // 目录id
 async function getChapterId(bookId) {
