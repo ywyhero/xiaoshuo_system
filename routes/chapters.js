@@ -131,6 +131,7 @@ const addChapters = (ctx, next) => {
         getChapter(url)
         function getChapter(url) {
             request.get(url)
+            .charset(htmlCharset)
             .end(async function (err, bres) {
                 if(err) {
                     return console.log(err)
@@ -181,6 +182,7 @@ const addChapters = (ctx, next) => {
             const p = function () {
                 return new Promise((resolve, reject) => {
                     request.get(url)
+                    .charset(htmlCharset)
                     .end(async (err, sres) => {
                         if(!sres) {
                             return getContent(url, i)
