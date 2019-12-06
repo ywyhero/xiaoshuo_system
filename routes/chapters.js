@@ -156,7 +156,7 @@ const addChapters = (ctx, next) => {
                     const chapterUrl = $(lis[i]).children().attr('href');
                     promiseTasks.push(getContent(chapterUrl, i))
                 }
-              
+                console.log(promiseTasks)
                 for(let i = 0; i < promiseTasks.length; i++) {
                     let task = promiseTasks[i];
                     const hasContent = await Schemas.contents.findOne({bookId: bookId, chapterId: i + 1});
