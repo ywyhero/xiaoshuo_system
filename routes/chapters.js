@@ -158,20 +158,23 @@ const addChapters = (ctx, next) => {
                     const chapterUrl = $(lis[i]).children().attr('href');
                     promiseTasks.push(getContent(chapterUrl, i))
                 }
-                console.log(promiseTasks.length)
                 for(let i = 0; i < promiseTasks.length; i++) {
                     let task = promiseTasks[i];
                     const hasContent = await Schemas.contents.findOne({bookId: bookId, chapterId: i + 1});
                     if(!hasContent) { 
-                        console.log('before-i: ', i)
                         let content = await task();
+                        if(content.includes('<a')) {
+                            content = content.split('<a')[0]
+                        }
+                        if(content.includes('<script')) {
+                            content = content.split('<script')[0]
+                        }
                         const contentObj = {
                             bookId: bookId,
                             chapterId: i + 1,
                             content,
                             createTime: Math.round(new Date().getTime() / 1000)
                         }
-                        console.log('after-i: ', i)
                         await Schemas.contents.create(contentObj)
                     }
                 }
@@ -188,7 +191,6 @@ const addChapters = (ctx, next) => {
                         .charset(htmlCharset)
                         .end(async (err, sres) => {
                             if(!sres) {
-                                console.log('stop1')
                                 addChapters(ctx, next);
                                 return 
                             }
@@ -196,7 +198,6 @@ const addChapters = (ctx, next) => {
                             const $ = cheerio.load(html, {decodeEntities: false});
                             const content = $(contentClassId).html();
                             if(!content) {
-                                console.log('stop2')
                                 addChapters(ctx, next);
                                 return 
                             }
