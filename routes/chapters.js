@@ -146,14 +146,15 @@ const addChapters = (ctx, next) => {
                 const lis = $(chapterClassId);
                 for(let i = 0; i < lis.length; i++) {
                     const chapterName = $(lis[i]).children().html();
+                    let index = i;
                     if(initCount) {
-                        i = initCount + i;
+                        index = initCount + index;
                     }
-                    const hasChapter = await Schemas.chapters.findOne({bookId: bookId, chapterId: i + 1});
+                    const hasChapter = await Schemas.chapters.findOne({bookId: bookId, chapterId: index + 1});
                     if(!hasChapter) {
                         const chapterObj = {
                             bookId: bookId,
-                            chapterId: i + 1,
+                            chapterId: index + 1,
                             chapterName: chapterName,
                             createTime: Math.round(new Date().getTime() / 1000)
                         }
@@ -165,12 +166,16 @@ const addChapters = (ctx, next) => {
                 }
                 for(let i = 0; i < promiseTasks.length; i++) {
                     let task = promiseTasks[i];
-                    const hasContent = await Schemas.contents.findOne({bookId: bookId, chapterId: i + 1});
+                    let index = i;
+                    if(initCount) {
+                        index = initCount + index;
+                    }
+                    const hasContent = await Schemas.contents.findOne({bookId: bookId, chapterId: index + 1});
                     if(!hasContent) { 
                         let content = await task();
                         const contentObj = {
                             bookId: bookId,
-                            chapterId: i + 1,
+                            chapterId: index + 1,
                             content,
                             createTime: Math.round(new Date().getTime() / 1000)
                         }
