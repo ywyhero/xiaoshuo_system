@@ -163,48 +163,6 @@ const addChapters = (ctx, next) => {
                     const hasContent = await Schemas.contents.findOne({bookId: bookId, chapterId: i + 1});
                     if(!hasContent) { 
                         let content = await task();
-                        if(content.includes('<a')) {
-                            for(let item of content.split('<a')) {
-                                if(!item.includes('<a') && item !== '') {
-                                    content = item
-                                }
-                            }
-                        }
-                        if(content.includes('</a>')) {
-                            for(let item of content.split('</a>')) {
-                                if(!item.includes('</a>') && item !== '') {
-                                    content = item
-                                }
-                            }
-                        }
-                        if(content.includes('<div')) {
-                            for(let item of content.split('<div')) {
-                                if(!item.includes('<div') && item !== '') {
-                                    content = item
-                                }
-                            }
-                        }
-                        if(content.includes('</div>')) {
-                            for(let item of content.split('</div>')) {
-                                if(!item.includes('</div>') && item !== '') {
-                                    content = item
-                                }
-                            }
-                        }
-                        if(content.includes('<script')) {
-                            for(let item of content.split('<script')) {
-                                if(!item.includes('<script') && item !== '') {
-                                    content = item
-                                }
-                            }
-                        }
-                        if(content.includes('</script>')) {
-                            for(let item of content.split('</script>')) {
-                                if(!item.includes('</script>') && item !== '') {
-                                    content = item
-                                }
-                            }
-                        }
                         const contentObj = {
                             bookId: bookId,
                             chapterId: i + 1,
@@ -232,7 +190,16 @@ const addChapters = (ctx, next) => {
                             }
                             const html = sres.text;
                             const $ = cheerio.load(html, {decodeEntities: false});
-                            const content = $(contentClassId).html();
+                            $(contentClassId).children().remove('a');
+                            $(contentClassId).children().remove('div');
+                            $(contentClassId).children().remove('p');
+                            let content = $(contentClassId).html();
+                            if(content.includes('shuhaige')) {
+                                let contentArr = content.split('<br>');
+                                contentArr.shift();
+                                content = contentArr.join('<br>');
+                            }
+                            
                             if(!content) {
                                 addChapters(ctx, next);
                                 return 
