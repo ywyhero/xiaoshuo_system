@@ -1,7 +1,7 @@
 const Schemas = require('../../controller/Schema');
 
 const getBooks = async (ctx, next) => {
-    const books = await Schemas.books.find({}).sort({updateTime: -1});
+    const books = await Schemas.books.find({}).sort({updateTime: 1});
     books.reverse();
     const newBooks = [],
           overBooks = [],
