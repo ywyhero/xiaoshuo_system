@@ -195,12 +195,14 @@ const addChapters = (ctx, next) => {
                         .charset(htmlCharset)
                         .end(async (err, sres) => {
                             if(!sres) {
+                                console.log('stop1')
                                 return getContent(url, i)
                             }
                             const html = sres.text;
                             const $ = cheerio.load(html, {decodeEntities: false});
                             const content = $(contentClassId).html();
                             if(!content) {
+                                console.log('stop2')
                                 return getContent(url, i)
                             }
                             resolve(content)
