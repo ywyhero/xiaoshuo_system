@@ -158,6 +158,7 @@ const addChapters = (ctx, next) => {
                     const chapterUrl = $(lis[i]).children().attr('href');
                     promiseTasks.push(getContent(chapterUrl, i))
                 }
+                console.log(promiseTasks.length)
                 for(let i = 0; i < promiseTasks.length; i++) {
                     let task = promiseTasks[i];
                     const hasContent = await Schemas.contents.findOne({bookId: bookId, chapterId: i + 1});
@@ -214,6 +215,12 @@ const addChapters = (ctx, next) => {
         }
         
     } catch (e) {
+        ctx.body = {
+            code: 200,
+            data: {
+                msg: '发布文章失败'
+            }
+        }
         console.log(e)
     }
 }

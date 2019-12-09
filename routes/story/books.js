@@ -66,7 +66,7 @@ const getContent = async (ctx, next) => {
         chapterName: chapter.chapterName,
         createTime: chapter.createTime,
     }
-    chapter = Object.assign(chapterObj, {isLast: isLast}, {content: content.content});
+    chapter = Object.assign(chapterObj, {isLast: isLast}, {content: content ? content.content : ''});
     ctx.body = {
         code: 200,
         chapter: chapter
