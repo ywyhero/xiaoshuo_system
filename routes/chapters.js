@@ -143,17 +143,12 @@ const addChapters = (ctx, next) => {
                
                 const html = bres.text;
                 const $ = cheerio.load(html, {decodeEntities: false});
-                // const arr = $(chapterClassId);
-                let lis = []
-                for(let i = 0; i < $(chapterClassId).length; i++) {
-                    lis.push($(chapterClassId)[i])
-                }
-                for(let i = 0; i < initCount; i++) {
-                    lis.unshift(i)
-                }
-                for(let i = initCount; i < lis.length; i++) {
-                    console.log(i)
+                const lis = $(chapterClassId);
+                for(let i = 0; i < lis.length; i++) {
                     const chapterName = $(lis[i]).children().html();
+                    if(initCount) {
+                        i = initCount + i;
+                    }
                     const hasChapter = await Schemas.chapters.findOne({bookId: bookId, chapterId: i + 1});
                     if(!hasChapter) {
                         const chapterObj = {
@@ -186,7 +181,6 @@ const addChapters = (ctx, next) => {
             });
         }
         function getContent(url, i) {
-            console.log(url)
             url = url.includes(host) ? url : `${host}${url}`;
             const p = function () {
                 return new Promise((resolve, reject) => {
@@ -204,7 +198,6 @@ const addChapters = (ctx, next) => {
                             $(contentClassId).children().remove('div');
                             $(contentClassId).children().remove('p');
                             let content = $(contentClassId).html();
-                            console.log(content)
                             if(content && content.includes('shuhaige')) {
                                 let contentArr = content.split('<br>');
                                 contentArr.shift();
