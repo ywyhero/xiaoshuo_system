@@ -1,7 +1,7 @@
 const Schemas = require('../../controller/Schema');
 
 const getBooks = async (ctx, next) => {
-    const books = await Schemas.books.find({});
+    const books = await Schemas.books.find({}).sort({updateTime: -1});
     books.reverse();
     const newBooks = [],
           overBooks = [],
@@ -41,7 +41,6 @@ const getChapters = async (ctx, next) => {
     const bookId = ctx.request.body.bookId;
     const book = await Schemas.books.findOne({bookId: bookId});
     const chapters = await Schemas.chapters.find({bookId, bookId});
-    console.log(book)
     let readCount = book.readCount;
     readCount = readCount + 1;
     await Schemas.books.updateOne({bookId: bookId}, {readCount: readCount});
@@ -89,7 +88,7 @@ const moreBooks = async (ctx, next) => {
     if(isOver) {
         searchInfo = Object.assign(searchInfo, {isOver: isOver});
     }
-    const lists = await Schemas.books.find(searchInfo).limit(pageSize).skip((pageNo - 1) * pageSize);
+    const lists = await Schemas.books.find(searchInfo).sort({updateTime: -1}).limit(pageSize).skip((pageNo - 1) * pageSize);
     const total = await Schemas.books.find(searchInfo).countDocuments();
     const books = [];
     for(let list of lists) {

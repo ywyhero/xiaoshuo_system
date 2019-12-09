@@ -185,7 +185,7 @@ const searchBooks = async (ctx, next) => {
         if(like) {
             findObj = Object.assign(findObj, {like: like})
         }
-        const books = await Schemas.books.find(findObj).limit(pageSize).skip((pageNo - 1) * pageSize);
+        const books = await Schemas.books.find(findObj).sort({updateTime: -1}).limit(pageSize).skip((pageNo - 1) * pageSize);
         const total = await Schemas.books.find(findObj).countDocuments();
         ctx.body = {
             code: 200,
