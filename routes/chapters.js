@@ -175,13 +175,6 @@ const addChapters = (ctx, next) => {
                         await Schemas.contents.create(contentObj)
                     }
                 }
-                console.log(chaptersCount)
-                console.log(contentCount)
-                const chaptersCount = await Schemas.chapters.find({bookId: bookId}).countDocuments();
-                const contentCount = await Schemas.contents.find({bookId: bookId}).countDocuments();
-                if(contentCount < chaptersCount) {
-                    addChapters(ctx, next);
-                }
                 await Schemas.books.updateOne({bookId: bookId}, {updateTime: Math.round(new Date().getTime() / 1000)})
                 
             });
@@ -196,14 +189,16 @@ const addChapters = (ctx, next) => {
                         .end(async (err, sres) => {
                             if(!sres) {
                                 console.log('stop1')
-                                return getContent(url, i)
+                                addChapters(ctx, next);
+                                return 
                             }
                             const html = sres.text;
                             const $ = cheerio.load(html, {decodeEntities: false});
                             const content = $(contentClassId).html();
                             if(!content) {
                                 console.log('stop2')
-                                return getContent(url, i)
+                                addChapters(ctx, next);
+                                return 
                             }
                             resolve(content)
                         });
