@@ -164,22 +164,43 @@ const addChapters = (ctx, next) => {
                     if(!hasContent) { 
                         let content = await task();
                         if(content.includes('<a')) {
-                            for(let item of content.split('<a')) {
+                            for(let item of content.split('<a') && item !== '') {
                                 if(!item.includes('<a')) {
                                     content = item
                                 }
                             }
                         }
+                        if(content.includes('</a>')) {
+                            for(let item of content.split('</a>') && item !== '') {
+                                if(!item.includes('</a>')) {
+                                    content = item
+                                }
+                            }
+                        }
                         if(content.includes('<div')) {
-                            for(let item of content.split('<div')) {
+                            for(let item of content.split('<div') && item !== '') {
                                 if(!item.includes('<div')) {
                                     content = item
                                 }
                             }
                         }
+                        if(content.includes('</div>')) {
+                            for(let item of content.split('</div>') && item !== '') {
+                                if(!item.includes('</div>')) {
+                                    content = item
+                                }
+                            }
+                        }
                         if(content.includes('<script')) {
-                            for(let item of content.split('<script')) {
+                            for(let item of content.split('<script') && item !== '') {
                                 if(!item.includes('<script')) {
+                                    content = item
+                                }
+                            }
+                        }
+                        if(content.includes('</script>')) {
+                            for(let item of content.split('</script>') && item !== '') {
+                                if(!item.includes('</script>')) {
                                     content = item
                                 }
                             }
