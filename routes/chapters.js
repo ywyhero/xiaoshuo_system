@@ -172,6 +172,8 @@ const addChapters = (ctx, next) => {
                         await Schemas.contents.create(contentObj)
                     }
                 }
+                console.log(chaptersCount)
+                console.log(contentCount)
                 const chaptersCount = await Schemas.chapters.find({bookId: bookId}).countDocuments();
                 const contentCount = await Schemas.contents.find({bookId: bookId}).countDocuments();
                 if(contentCount < chaptersCount) {
