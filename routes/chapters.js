@@ -143,10 +143,10 @@ const addChapters = (ctx, next) => {
                
                 const html = bres.text;
                 const $ = cheerio.load(html, {decodeEntities: false});
-                const arr = $(chapterClassId);
+                // const arr = $(chapterClassId);
                 let lis = []
-                for(let ar of arr) {
-                    lis.push(ar)
+                for(let i = initCount; i < $(chapterClassId).length; i++) {
+                    lis.push($(chapterClassId)[i])
                 }
                 for(let i = 0; i < initCount; i++) {
                     lis.unshift(i)
