@@ -18,7 +18,8 @@ const booksSchema = new mongoose.Schema({
     isOver: Number,
     like: Number,
     readCount: Number,
-    createTime: Number
+    createTime: Number,
+    updateTime: Number
 })
 //创建小说章节
 const chapterSchema = new mongoose.Schema({

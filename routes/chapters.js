@@ -54,7 +54,7 @@ const addChapter = async (ctx, next) => {
             }
             await Schemas.contents.create(contentObj)
         }
-    
+        await Schemas.books.updateOne({bookId: bookId}, {updateTime: Math.round(new Date().getTime() / 1000)})
         ctx.body = {
             code: 200,
             data: {
@@ -72,7 +72,7 @@ const deleteChapter = async (ctx, next) => {
         const chapterId = Number(ctx.request.body.chapterId);
         await Schemas.chapters.deleteOne({ bookId: bookId, chapterId : chapterId});
         await Schemas.contents.deleteOne({ bookId: bookId, chapterId : chapterId});
-    
+        await Schemas.books.updateOne({bookId: bookId}, {updateTime: Math.round(new Date().getTime() / 1000)})
         ctx.body = {
             code: 200,
             data: {
@@ -177,6 +177,7 @@ const addChapters = (ctx, next) => {
                 if(contentCount < chaptersCount) {
                     addChapters(ctx, next);
                 }
+                await Schemas.books.updateOne({bookId: bookId}, {updateTime: Math.round(new Date().getTime() / 1000)})
                 
             });
         }

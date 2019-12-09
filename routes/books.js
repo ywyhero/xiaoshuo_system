@@ -107,6 +107,7 @@ const createBook = async (ctx, next) => {
                 imgUrl: imgUrl ? imgUrl : `${config.address}:3000/upload/images/default.jpg`,
                 like,
                 keyword,
+                updateTime: Math.round(new Date().getTime() / 1000),
                 isOver,
                 description
             }
@@ -123,6 +124,7 @@ const createBook = async (ctx, next) => {
                 bookId: newBookId,
                 author,
                 createTime: Math.round(new Date().getTime() / 1000),
+                updateTime: Math.round(new Date().getTime() / 1000),
                 name,
                 type,
                 keyword,
