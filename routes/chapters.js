@@ -125,6 +125,7 @@ const addChapters = (ctx, next) => {
         const htmlCharset = ctx.request.body.htmlCharset;
         const chapterClassId = ctx.request.body.chapterClassId;
         const contentClassId = ctx.request.body.contentClassId;
+        const initCount = Number(ctx.request.body.initCount) || 0;
         const url = ctx.request.body.url;
         const host = ctx.request.body.host;
         const promiseTasks = [];
@@ -143,7 +144,7 @@ const addChapters = (ctx, next) => {
                 const html = bres.text;
                 const $ = cheerio.load(html, {decodeEntities: false});
                 const lis = $(chapterClassId);
-                for(let i = 0; i < lis.length; i++) {
+                for(let i = initCount; i < lis.length + initCount; i++) {
                     const chapterName = $(lis[i]).children().html();
                     const hasChapter = await Schemas.chapters.findOne({bookId: bookId, chapterId: i + 1});
                     if(!hasChapter) {
