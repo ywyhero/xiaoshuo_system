@@ -164,13 +164,25 @@ const addChapters = (ctx, next) => {
                     if(!hasContent) { 
                         let content = await task();
                         if(content.includes('<a')) {
-                            content = content.split('<a')[0]
+                            for(let item of content.split('<a')) {
+                                if(!item.includes('<a')) {
+                                    content = item
+                                }
+                            }
                         }
                         if(content.includes('<div')) {
-                            content = content.split('<div')[0]
+                            for(let item of content.split('<div')) {
+                                if(!item.includes('<div')) {
+                                    content = item
+                                }
+                            }
                         }
                         if(content.includes('<script')) {
-                            content = content.split('<script')[0]
+                            for(let item of content.split('<script')) {
+                                if(!item.includes('<script')) {
+                                    content = item
+                                }
+                            }
                         }
                         const contentObj = {
                             bookId: bookId,
