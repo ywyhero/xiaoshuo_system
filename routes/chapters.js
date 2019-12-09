@@ -188,20 +188,25 @@ const addChapters = (ctx, next) => {
             url = url.includes(host) ? url : `${host}${url}`;
             const p = function () {
                 return new Promise((resolve, reject) => {
-                    request.get(url)
-                    .charset(htmlCharset)
-                    .end(async (err, sres) => {
-                        if(!sres) {
-                            return getContent(url, i)
-                        }
-                        const html = sres.text;
-                        const $ = cheerio.load(html, {decodeEntities: false});
-                        const content = $(contentClassId).html();
-                        if(!content) {
-                            return getContent(url, i)
-                        }
-                        resolve(content)
-                    });
+                    try {   
+                        request.get(url)
+                        .charset(htmlCharset)
+                        .end(async (err, sres) => {
+                            if(!sres) {
+                                return getContent(url, i)
+                            }
+                            const html = sres.text;
+                            const $ = cheerio.load(html, {decodeEntities: false});
+                            const content = $(contentClassId).html();
+                            if(!content) {
+                                return getContent(url, i)
+                            }
+                            resolve(content)
+                        });
+                    } catch (e) {
+                        console.log(e)
+                    }
+                    
                 })
             }
             return p
