@@ -163,6 +163,7 @@ const addChapters = (ctx, next) => {
                     let task = promiseTasks[i];
                     const hasContent = await Schemas.contents.findOne({bookId: bookId, chapterId: i + 1});
                     if(!hasContent) { 
+                        console.log('before-i: ', i)
                         let content = await task();
                         const contentObj = {
                             bookId: bookId,
@@ -170,6 +171,7 @@ const addChapters = (ctx, next) => {
                             content,
                             createTime: Math.round(new Date().getTime() / 1000)
                         }
+                        console.log('after-i: ', i)
                         await Schemas.contents.create(contentObj)
                     }
                 }
