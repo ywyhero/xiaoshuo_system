@@ -123,7 +123,6 @@ const addChapters = (ctx, next) => {
     try {
         const bookId = ctx.request.body.bookId;
         const htmlCharset = ctx.request.body.htmlCharset;
-        console.log(htmlCharset)
         const chapterClassId = ctx.request.body.chapterClassId;
         const contentClassId = ctx.request.body.contentClassId;
         const url = ctx.request.body.url;
@@ -146,7 +145,6 @@ const addChapters = (ctx, next) => {
                 const lis = $(chapterClassId);
                 for(let i = 0; i < lis.length; i++) {
                     const chapterName = $(lis[i]).children().html();
-                    console.log(chapterName)
                     const hasChapter = await Schemas.chapters.findOne({bookId: bookId, chapterId: i + 1});
                     if(!hasChapter) {
                         const chapterObj = {
@@ -160,13 +158,11 @@ const addChapters = (ctx, next) => {
                     const chapterUrl = $(lis[i]).children().attr('href');
                     promiseTasks.push(getContent(chapterUrl, i))
                 }
-                console.log(promiseTasks)
                 for(let i = 0; i < promiseTasks.length; i++) {
                     let task = promiseTasks[i];
                     const hasContent = await Schemas.contents.findOne({bookId: bookId, chapterId: i + 1});
                     if(!hasContent) { 
                         let content = await task();
-                        console.log(content)
                         const contentObj = {
                             bookId: bookId,
                             chapterId: i + 1,
@@ -176,18 +172,21 @@ const addChapters = (ctx, next) => {
                         await Schemas.contents.create(contentObj)
                     }
                 }
+                const chaptersCount = await Schemas.chapters.find({bookId: bookId}).countDocuments();
+                const contentCount = await Schemas.contents.find({bookId: bookId}).countDocuments();
+                if(contentCount < chaptersCount) {
+                    addChapters(ctx, next);
+                }
                 
             });
         }
         function getContent(url, i) {
             url = url.includes(host) ? url : `${host}${url}`;
-            console.log(url)
             const p = function () {
                 return new Promise((resolve, reject) => {
                     request.get(url)
                     .charset(htmlCharset)
                     .end(async (err, sres) => {
-                        console.log(sres)
                         if(!sres) {
                             return getContent(url, i)
                         }
