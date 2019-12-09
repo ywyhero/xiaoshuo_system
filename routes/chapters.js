@@ -166,6 +166,9 @@ const addChapters = (ctx, next) => {
                         if(content.includes('<a')) {
                             content = content.split('<a')[0]
                         }
+                        if(content.includes('<div')) {
+                            content = content.split('<div')[0]
+                        }
                         if(content.includes('<script')) {
                             content = content.split('<script')[0]
                         }
