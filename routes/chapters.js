@@ -195,7 +195,8 @@ const addChapters = (ctx, next) => {
                             $(contentClassId).children().remove('div');
                             $(contentClassId).children().remove('p');
                             let content = $(contentClassId).html();
-                            if(content.includes('shuhaige')) {
+                            console.log(content)
+                            if(content && content.includes('shuhaige')) {
                                 let contentArr = content.split('<br>');
                                 contentArr.shift();
                                 content = contentArr.join('<br>');
