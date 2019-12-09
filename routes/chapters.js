@@ -145,7 +145,7 @@ const addChapters = (ctx, next) => {
                 const $ = cheerio.load(html, {decodeEntities: false});
                 // const arr = $(chapterClassId);
                 let lis = []
-                for(let i = initCount; i < $(chapterClassId).length; i++) {
+                for(let i = 0; i < $(chapterClassId).length; i++) {
                     lis.push($(chapterClassId)[i])
                 }
                 for(let i = 0; i < initCount; i++) {
