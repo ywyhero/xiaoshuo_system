@@ -164,43 +164,43 @@ const addChapters = (ctx, next) => {
                     if(!hasContent) { 
                         let content = await task();
                         if(content.includes('<a')) {
-                            for(let item of content.split('<a') && item !== '') {
-                                if(!item.includes('<a')) {
+                            for(let item of content.split('<a')) {
+                                if(!item.includes('<a') && item !== '') {
                                     content = item
                                 }
                             }
                         }
                         if(content.includes('</a>')) {
-                            for(let item of content.split('</a>') && item !== '') {
-                                if(!item.includes('</a>')) {
+                            for(let item of content.split('</a>')) {
+                                if(!item.includes('</a>') && item !== '') {
                                     content = item
                                 }
                             }
                         }
                         if(content.includes('<div')) {
-                            for(let item of content.split('<div') && item !== '') {
-                                if(!item.includes('<div')) {
+                            for(let item of content.split('<div')) {
+                                if(!item.includes('<div') && item !== '') {
                                     content = item
                                 }
                             }
                         }
                         if(content.includes('</div>')) {
-                            for(let item of content.split('</div>') && item !== '') {
-                                if(!item.includes('</div>')) {
+                            for(let item of content.split('</div>')) {
+                                if(!item.includes('</div>') && item !== '') {
                                     content = item
                                 }
                             }
                         }
                         if(content.includes('<script')) {
-                            for(let item of content.split('<script') && item !== '') {
-                                if(!item.includes('<script')) {
+                            for(let item of content.split('<script')) {
+                                if(!item.includes('<script') && item !== '') {
                                     content = item
                                 }
                             }
                         }
                         if(content.includes('</script>')) {
-                            for(let item of content.split('</script>') && item !== '') {
-                                if(!item.includes('</script>')) {
+                            for(let item of content.split('</script>')) {
+                                if(!item.includes('</script>') && item !== '') {
                                     content = item
                                 }
                             }
