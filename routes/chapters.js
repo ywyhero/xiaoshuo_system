@@ -160,6 +160,7 @@ const addChapters = (ctx, next) => {
                         await Schemas.chapters.create(chapterObj)
                     }
                     const chapterUrl = $(lis[i]).children().attr('href');
+                    console.log(chapterUrl)
                     promiseTasks.push(getContent(chapterUrl, i))
                 }
                 for(let i = 0; i < promiseTasks.length; i++) {
