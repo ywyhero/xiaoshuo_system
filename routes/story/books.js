@@ -6,17 +6,16 @@ const getBooks = async (ctx, next) => {
     const newBooks = [],
           overBooks = [],
           tryBooks = [];
-    for(let i = 0; i < 6; i++) {
-        if(books[i]) {
+    for(let i = 0; i < books.length; i++) {
+        if(newBooks.length < 6) {
             newBooks.push(books[i]);
-            if(books[i].isOver === 2) {
-                overBooks.push(books[i])
-            }
-            if(books[i].isOver === 1) {
-                tryBooks.push(books[i])
-            }
         }
-        
+        if(overBooks.length < 6 && books[i].isOver === 2) {
+            overBooks.push(books[i])
+        }
+        if(tryBooks.length < 6 && books[i].isOver === 1) {
+            tryBooks.push(books[i])
+        }
     }
     const result = [{
         title: '最新上传',
