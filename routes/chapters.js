@@ -161,7 +161,6 @@ const addChapters = (ctx, next) => {
                         await Schemas.chapters.create(chapterObj)
                     }
                     const chapterUrl = $(lis[i]).children().attr('href');
-                    console.log(chapterUrl)
                     promiseTasks.push(getContent(chapterUrl, i))
                 }
                 for(let i = 0; i < promiseTasks.length; i++) {
@@ -203,13 +202,28 @@ const addChapters = (ctx, next) => {
                             $(contentClassId).children().remove('a');
                             $(contentClassId).children().remove('div');
                             $(contentClassId).children().remove('p');
+                            $(contentClassId).children().remove('script');
                             let content = $(contentClassId).html();
                             if(content && content.includes('shuhaige')) {
                                 let contentArr = content.split('<br>');
                                 contentArr.shift();
                                 content = contentArr.join('<br>');
                             }
-                            
+                            if(content && content.includes('www')) {
+                                let contentArr = content.split('<br>');
+                                contentArr.pop();
+                                content = contentArr.join('<br>');
+                            }
+                            if(content && content.includes('百度')) {
+                                let contentArr = content.split('<br>');
+                                contentArr.pop();
+                                content = contentArr.join('<br>');
+                            }
+                            if(content && content.includes('还在找')) {
+                                let contentArr = content.split('<br>');
+                                contentArr.pop();
+                                content = contentArr.join('<br>');
+                            }
                             if(!content) {
                                 addChapters(ctx, next);
                                 return 
