@@ -32,9 +32,12 @@ const getBooks = async (ctx, next) => {
     }]
     ctx.body = {
         code: 200,
-        books: result
+        data: {
+            books: result
+        }
+        
     }
-    await next();
+    // await next();
 }
 const getChapters = async (ctx, next) => {
     const bookId = ctx.request.body.bookId;
