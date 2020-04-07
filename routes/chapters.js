@@ -144,12 +144,18 @@ const addChapters = (ctx, next) => {
                 const html = bres.text;
                 const $ = cheerio.load(html, {decodeEntities: false});
                 const lis = $(chapterClassId);
+<<<<<<< HEAD
 		 for(let i = 0; i < lis.length; i++) {
                     let index = i;
                     if(initCount) {
                         index = initCount + index;
                     }
 		    const chapterName = $(lis[index]).children().html()
+=======
+                for(let i = initCount; i < lis.length; i++) {
+                    let index = i;
+                    const chapterName = $(lis[index]).children().html();
+>>>>>>> bf4a9bab5b4d391471a453b6773067ac1695bca1
                     const hasChapter = await Schemas.chapters.findOne({bookId: bookId, chapterId: index + 1});
                     if(!hasChapter) {
                         const chapterObj = {
@@ -163,12 +169,9 @@ const addChapters = (ctx, next) => {
                     const chapterUrl = $(lis[index]).children().attr('href');
                     promiseTasks.push(getContent(chapterUrl, index))
                 }
-                for(let i = 0; i < promiseTasks.length; i++) {
+                for(let i = initCount; i < promiseTasks.length; i++) {
                     let task = promiseTasks[i];
                     let index = i;
-                    if(initCount) {
-                        index = initCount + index;
-                    }
                     const hasContent = await Schemas.contents.findOne({bookId: bookId, chapterId: index + 1});
                     if(!hasContent) { 
                         let content = await task();
@@ -186,6 +189,9 @@ const addChapters = (ctx, next) => {
             });
         }
         function getContent(url, i) {
+            if(!url) {
+                return
+            }
             url = url.includes(host) ? url : `${host}${url}`;
             const p = function () {
                 return new Promise((resolve, reject) => {
