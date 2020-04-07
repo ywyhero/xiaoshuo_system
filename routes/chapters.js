@@ -166,7 +166,6 @@ const addChapters = (ctx, next) => {
                     const hasContent = await Schemas.contents.findOne({bookId: bookId, chapterId: index + 1});
                     if(!hasContent) { 
                         let content = await task();
-                        console.log(content)
                         const contentObj = {
                             bookId: bookId,
                             chapterId: index + 1,
@@ -185,6 +184,7 @@ const addChapters = (ctx, next) => {
                 return
             }
             url = url.includes(host) ? url : `${host}${url}`;
+            console.log(url)
             const p = function () {
                 return new Promise((resolve, reject) => {
                     try {   
@@ -202,6 +202,7 @@ const addChapters = (ctx, next) => {
                             $(contentClassId).children().remove('p');
                             $(contentClassId).children().remove('script');
                             let content = $(contentClassId).html();
+                            console.log(content)
                             if(content && content.includes('shuhaige')) {
                                 let contentArr = content.split('<br>');
                                 contentArr.shift();
