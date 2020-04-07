@@ -126,6 +126,7 @@ const addChapters = (ctx, next) => {
         const chapterClassId = ctx.request.body.chapterClassId;
         const contentClassId = ctx.request.body.contentClassId;
         const initCount = Number(ctx.request.body.initCount) || 0;
+        const otherCount = Number(ctx.request.body.otherCount) || 0;
         const url = ctx.request.body.url;
         const host = ctx.request.body.host;
         const promiseTasks = [];
@@ -146,7 +147,7 @@ const addChapters = (ctx, next) => {
                 const lis = $(chapterClassId);
                 for(let i = initCount; i < lis.length; i++) {
                     let index = i;
-                    const chapterName = $(lis[index]).children().html();
+                    const chapterName = $(lis[index - otherCount]).children().html();
                     const hasChapter = await Schemas.chapters.findOne({bookId: bookId, chapterId: index + 1});
                     if(!hasChapter) {
                         const chapterObj = {
@@ -157,7 +158,7 @@ const addChapters = (ctx, next) => {
                         }
                         await Schemas.chapters.create(chapterObj)
                     }
-                    const chapterUrl = $(lis[index]).children().attr('href');
+                    const chapterUrl = $(lis[index - otherCount]).children().attr('href');
                     promiseTasks.push(getContent(chapterUrl, index))
                 }
                 for(let i = initCount; i < promiseTasks.length; i++) {
@@ -184,7 +185,6 @@ const addChapters = (ctx, next) => {
                 return
             }
             url = url.includes(host) ? url : `${host}${url}`;
-            console.log(url)
             const p = function () {
                 return new Promise((resolve, reject) => {
                     try {   
@@ -202,7 +202,6 @@ const addChapters = (ctx, next) => {
                             $(contentClassId).children().remove('p');
                             $(contentClassId).children().remove('script');
                             let content = $(contentClassId).html();
-                            console.log(content)
                             if(content && content.includes('shuhaige')) {
                                 let contentArr = content.split('<br>');
                                 contentArr.shift();
