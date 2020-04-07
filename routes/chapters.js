@@ -166,6 +166,7 @@ const addChapters = (ctx, next) => {
                     const hasContent = await Schemas.contents.findOne({bookId: bookId, chapterId: index + 1});
                     if(!hasContent) { 
                         let content = await task();
+                        console.log(content)
                         const contentObj = {
                             bookId: bookId,
                             chapterId: index + 1,
