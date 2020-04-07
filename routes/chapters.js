@@ -226,7 +226,6 @@ const addChapters = (ctx, next) => {
                                 addChapters(ctx, next);
                                 return 
                             }
-                            console.log(content)
                             resolve(content)
                         });
                     } catch (e) {
