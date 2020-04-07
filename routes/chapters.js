@@ -186,6 +186,9 @@ const addChapters = (ctx, next) => {
             });
         }
         function getContent(url, i) {
+            if(!url) {
+                return
+            }
             url = url.includes(host) ? url : `${host}${url}`;
             const p = function () {
                 return new Promise((resolve, reject) => {
