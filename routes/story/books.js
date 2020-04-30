@@ -44,7 +44,7 @@ const getChapters = async (ctx, next) => {
     const pageSize = ctx.request.body.pageSize || 600;
     const pageNo = ctx.request.body.pageNo || 1;
     const book = await Schemas.books.findOne({bookId: bookId});
-    const total = await Schemas.chapters.countDocuments()
+    const total = await Schemas.chapters.find({bookId, bookId}).countDocuments()
     const chapters = await Schemas.chapters.find({bookId, bookId}).limit(pageSize).skip((pageNo - 1) * pageSize);
     let readCount = book.readCount;
     readCount = readCount + 1;
