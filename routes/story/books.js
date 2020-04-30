@@ -41,13 +41,17 @@ const getBooks = async (ctx, next) => {
 }
 const getChapters = async (ctx, next) => {
     const bookId = ctx.request.body.bookId;
+    const pageSize = ctx.request.body.pageSize || 600;
+    const pageNo = ctx.request.body.pageNo || 1;
     const book = await Schemas.books.findOne({bookId: bookId});
-    const chapters = await Schemas.chapters.find({bookId, bookId});
+    const total = await Schemas.chapters.countDocuments()
+    const chapters = await Schemas.chapters.find({bookId, bookId}).limit(pageSize).skip((pageNo - 1) * pageSize);
     let readCount = book.readCount;
     readCount = readCount + 1;
     await Schemas.books.updateOne({bookId: bookId}, {readCount: readCount});
     ctx.body = {
         code: 200,
+        total: total,
         chapters: chapters
     }
 }

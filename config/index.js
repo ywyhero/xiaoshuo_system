@@ -5,5 +5,5 @@ module.exports = {
   address: 'https://www.vinekan.com',
   // address: 'http://47.105.109.192',
   // prodport: 80,
-  prodport: 8082,
+  prodport: 8084,
 }
